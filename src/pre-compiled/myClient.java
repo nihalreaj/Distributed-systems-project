@@ -37,7 +37,7 @@ public class myClient {
                 } else {
                     String[] jobSplit = rcvd.split("\\s");
                     int jobID = Integer.parseInt(jobSplit[2]);
-                    String getsMessage = "GETS Capable" + jobSplit[4] + " " + jobSplit[5] + " " +
+                    String getsMessage = "GETS Capable " + jobSplit[4] + " " + jobSplit[5] + " " +
                             jobSplit[6] + "\n";
                     output.write(getsMessage.getBytes());
                     output.flush();
@@ -73,8 +73,9 @@ public class myClient {
 
                     input.readLine();
                     String schd = "SCHD: " + jobID + " " + serverTypeList.get(largestIndex) + " "
-                            + serverIDList.get(largestIndex);
+                            + serverIDList.get(largestIndex) + "\n";
                     output.write(schd.getBytes());
+                    output.flush();
                     input.readLine();
                     output.write("REDY\n".getBytes());
                     output.flush();
