@@ -30,7 +30,7 @@ public class myClient {
 
             while (!rcvd.contains("NONE")) {
                 if (rcvd.contains("JCPL")) {
-                    output.write("REDY".getBytes());
+                    output.write("REDY\n".getBytes());
                     output.flush();
 
                     rcvd = input.readLine();
@@ -53,7 +53,7 @@ public class myClient {
 
                     int largestIndex = 0;
                     // int count = 0;
-                    for (int i = 0; i < jobNum - 1; i++) {
+                    for (int i = 0; i < jobNum; i++) {
 
                         String serverInfo = input.readLine();
                         String[] serverSplit = serverInfo.split("\\s");
@@ -72,13 +72,14 @@ public class myClient {
                     output.flush();
 
                     input.readLine();
-                    String schd = "SCHD: " + jobID + " " + serverTypeList.get(largestIndex) + " "
+                    String schd = "SCHD " + jobID + " " + serverTypeList.get(largestIndex) + " "
                             + serverIDList.get(largestIndex) + "\n";
                     output.write(schd.getBytes());
                     output.flush();
                     input.readLine();
                     output.write("REDY\n".getBytes());
                     output.flush();
+                    rcvd = input.readLine();
 
                 }
 
