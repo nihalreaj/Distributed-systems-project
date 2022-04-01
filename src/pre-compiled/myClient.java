@@ -11,25 +11,39 @@ public class myClient {
 
             // 3 way handshake
             output.write("HELO\n".getBytes());
-            input.readLine();
+            output.flush();
+
+            String str = (String) input.readLine();
+            System.out.println(str);
+
             output.write("AUTH Nihal\n".getBytes());
-            input.readLine();
+            output.flush();
+
+            str = (String) input.readLine();
+            System.out.println(str);
 
             output.write("REDY\n".getBytes());
-            String rcvd = input.readLine();
+            output.flush();
 
-            while (rcvd.contains("NONE")) {
+            String rcvd = input.readLine();
+            System.out.println(rcvd);
+
+            while (!rcvd.contains("NONE")) {
                 if (rcvd.contains("JCPL")) {
                     output.write("REDY".getBytes());
+                    output.flush();
+
                     rcvd = input.readLine();
                 } else {
                     String[] jobSplit = rcvd.split("\\s");
                     int jobID = Integer.parseInt(jobSplit[2]);
-                    // String getsMessage = "GETS Capable" + jobSplit[4] + " " + jobSplit[5] + " " +
-                    // jobSplit[6] + "\n";
-                    output.write("GETS ALL\n".getBytes());
+                    String getsMessage = "GETS Capable" + jobSplit[4] + " " + jobSplit[5] + " " +
+                            jobSplit[6] + "\n";
+                    output.write(getsMessage.getBytes());
+                    output.flush();
                     rcvd = input.readLine();
                     output.write("OK\n".getBytes());
+                    output.flush();
                     String[] dataSplit = rcvd.split("\\s");
                     int jobNum = Integer.parseInt(dataSplit[1]);
 
@@ -55,16 +69,23 @@ public class myClient {
                     }
 
                     output.write("OK\n".getBytes());
+                    output.flush();
+
                     input.readLine();
                     String schd = "SCHD: " + jobID + " " + serverTypeList.get(largestIndex) + " "
                             + serverIDList.get(largestIndex);
                     output.write(schd.getBytes());
                     input.readLine();
                     output.write("REDY\n".getBytes());
+                    output.flush();
 
                 }
 
             }
+
+            output.write("QUIT\n".getBytes());
+            output.flush();
+
             output.close();
             input.close();
             socket.close();
