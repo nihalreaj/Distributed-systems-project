@@ -99,6 +99,8 @@ public class myClient {
                     input.readLine();
                     String schd = "SCHD " + jobID + " " + largestServerType + " "
                             + serverIDList.get(largestIndexCore) + "\n";
+
+                    System.out.println(schd);
                     output.write(schd.getBytes());
                     output.flush();
                     input.readLine();
