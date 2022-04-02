@@ -28,7 +28,9 @@ public class myClient {
 
             // Recevies Job details from server and stored in a String variable
             String rcvd = input.readLine();
-            System.out.println(rcvd);
+
+            String largestServerType = " ";
+            int count = 1;
 
             // Loop to schedule jobs
             while (!rcvd.contains("NONE")) {
@@ -67,10 +69,7 @@ public class myClient {
 
                     // intialized a largest index int for server with most CPUCores
                     int largestIndexCore = 0;
-                    // initialized largest servertype string
-                    String largestServerType = " ";
 
-                    int count = 0;
                     for (int i = 0; i < jobNum; i++) {
                         // Receives server details for ones that can handle the job
                         String serverInfo = input.readLine();
@@ -84,30 +83,43 @@ public class myClient {
                         serverTypeList.add(i, serverType);
                         serverIDList.add(i, serverID);
 
-                        if (!largestServerType.contains(serverType)) {
-                            if (cpuCoresList.get(i) > cpuCoresList.get(largestIndexCore)) {
-                                largestIndexCore = i;
-                                largestServerType = serverTypeList.get(i);
-                            }
+                        if (largestServerType.contains(serverType)) {
+                            count++;
                         }
+
+                        if (cpuCoresList.get(i) > cpuCoresList.get(largestIndexCore)) {
+                            largestIndexCore = i;
+                            largestServerType = serverTypeList.get(i);
+                        }
+
+                        if (count == 1) {
+                            largestServerType = serverTypeList.get(i);
+                        }
+
                     }
+
+                    count = Collections.frequency(serverTypeList, largestServerType);
 
                     output.write("OK\n".getBytes());
                     output.flush();
 
+                    int schdIndex = jobID % count;
+
                     // receives a "." message to schedule the job
                     input.readLine();
                     String schd = "SCHD " + jobID + " " + largestServerType + " "
-                            + serverIDList.get(largestIndexCore) + "\n";
+                            + schdIndex + "\n";
 
-                    System.out.println(schd);
                     output.write(schd.getBytes());
                     output.flush();
+
+                    // Receives an "OK" message
                     input.readLine();
                     output.write("REDY\n".getBytes());
                     output.flush();
                     // receives next job details
                     rcvd = input.readLine();
+                    count = 1;
 
                 }
 
