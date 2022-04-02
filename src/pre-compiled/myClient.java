@@ -13,13 +13,13 @@ public class myClient {
             output.write("HELO\n".getBytes());
             output.flush();
 
-            String str = (String) input.readLine();
+            String str = input.readLine();
             System.out.println(str);
 
             output.write("AUTH Nihal\n".getBytes());
             output.flush();
 
-            str = (String) input.readLine();
+            str = input.readLine();
             System.out.println(str);
 
             output.write("REDY\n".getBytes());
@@ -87,6 +87,7 @@ public class myClient {
 
             output.write("QUIT\n".getBytes());
             output.flush();
+            input.readLine();
 
             output.close();
             input.close();
