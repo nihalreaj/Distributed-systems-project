@@ -60,17 +60,18 @@ public class myClient {
                     String[] dataSplit = rcvd.split("\\s");
 
                     // Takes the 2nd arguement,number of servers, and stored in an int variable
-                    int jobNum = Integer.parseInt(dataSplit[1]);
+                    int serverNum = Integer.parseInt(dataSplit[1]);
 
                     // Arraylists created to store the details required to schedule a new job
                     ArrayList<Integer> serverIDList = new ArrayList<Integer>();
                     ArrayList<String> serverTypeList = new ArrayList<String>();
                     ArrayList<Integer> cpuCoresList = new ArrayList<Integer>();
+                    ArrayList<String> largestServers = new ArrayList<String>();
 
                     // intialized a largest index int for server with most CPUCores
                     int largestIndexCore = 0;
 
-                    for (int i = 0; i < jobNum; i++) {
+                    for (int i = 0; i < serverNum; i++) {
                         // Receives server details for ones that can handle the job
                         String serverInfo = input.readLine();
                         String[] serverSplit = serverInfo.split("\\s");
@@ -90,6 +91,7 @@ public class myClient {
                         if (cpuCoresList.get(i) > cpuCoresList.get(largestIndexCore)) {
                             largestIndexCore = i;
                             largestServerType = serverTypeList.get(i);
+                            count = 1;
                         }
 
                         if (count == 1) {
@@ -98,6 +100,7 @@ public class myClient {
 
                     }
 
+                    largestServerType = serverTypeList.get(serverTypeList.size() - 1);
                     count = Collections.frequency(serverTypeList, largestServerType);
 
                     output.write("OK\n".getBytes());
