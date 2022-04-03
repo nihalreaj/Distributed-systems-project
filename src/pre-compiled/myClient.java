@@ -18,7 +18,6 @@ public class myClient {
             input.readLine();
 
             output.write("AUTH nihal\n".getBytes());
-
             output.flush();
 
             // Receives a welcome message
@@ -30,11 +29,11 @@ public class myClient {
             // Recevies Job details from server and stored in a String variable
             String rcvd = input.readLine();
 
-            String largestServerType = " ";
-            int count = 1;
-            int loopStart = 0;
+            String largestServerType = " "; // String created to store largest server type
 
-            // Loop to schedule jobs
+            int loopStart = 0; // created an int variable so that largestServerType gets updated only once
+
+            // While-Loop to schedule jobs
             while (!rcvd.contains("NONE")) {
                 if (rcvd.contains("JCPL")) {
                     output.write("REDY\n".getBytes());
@@ -51,21 +50,23 @@ public class myClient {
                     int jobID = Integer.parseInt(jobSplit[2]); // Storing jobID as an int
 
                     String getsMessage = "GETS Capable " + jobSplit[4] + " " + jobSplit[5] + " " +
-                            jobSplit[6] + "\n";
+                            jobSplit[6] + "\n"; // String variable created to store message for GETS
                     output.write(getsMessage.getBytes());
                     output.flush();
 
                     // Receives a data message for how many servers can handle the current job
                     rcvd = input.readLine();
+
                     output.write("OK\n".getBytes());
                     output.flush();
+                    // Splitting data to find out number of servers that can run job
                     String[] dataSplit = rcvd.split("\\s");
 
                     // Takes the 2nd arguement,number of servers, and stored in an int variable
                     int serverNum = Integer.parseInt(dataSplit[1]);
 
-                    // Arraylists created to store the details required to schedule a new job
-                    ArrayList<Integer> serverIDList = new ArrayList<Integer>();
+                    // Arraylists created to store the server type and coreCount required to
+                    // schedule a new job
                     ArrayList<String> serverTypeList = new ArrayList<String>();
                     ArrayList<Integer> cpuCoresList = new ArrayList<Integer>();
 
@@ -73,39 +74,30 @@ public class myClient {
                     int largestIndexCore = 0;
 
                     // for-loop to iterate through all available servers
-                    if (loopStart == 0) {
+                    if (loopStart == 0) { // if-statement so largestServerType updates only once
                         for (int i = 0; i < serverNum; i++) {
                             // Receives server details for ones that can handle the job
                             String serverInfo = input.readLine();
-                            String[] serverSplit = serverInfo.split("\\s");
-                            String serverType = serverSplit[0];
+                            String[] serverSplit = serverInfo.split("\\s"); // Splits server info and stored in array
+                            String serverType = serverSplit[0]; // stores current server type in a String
 
-                            // int serverID = Integer.parseInt(serverSplit[1]);
+                            int cpuCores = Integer.parseInt(serverSplit[4]); // Stores server coreCount in an int
+                            cpuCoresList.add(i, cpuCores); // adds current coreCount to ArrayList
+                            serverTypeList.add(i, serverType); // adds current server type to Arraylist
 
-                            int cpuCores = Integer.parseInt(serverSplit[4]);
-                            cpuCoresList.add(i, cpuCores);
-                            serverTypeList.add(i, serverType);
-                            // serverIDList.add(i, serverID);
-
-                            // if (largestServerType.contains(serverType)) {
-                            // count++;
-                            // }
-
+                            // Checks to see if current server has more cores than one of largestIndex
                             if (cpuCoresList.get(i) > cpuCoresList.get(largestIndexCore)) {
                                 largestIndexCore = i;
                                 largestServerType = serverTypeList.get(i);
-                                // count = 1;
                             }
 
+                            // updates LargestServerType when there is only one server listed
                             if (serverTypeList.size() == 1) {
                                 largestServerType = serverTypeList.get(0);
                             }
 
-                            // if (count == 1) {
-                            // largestServerType = serverTypeList.get(i);
-                            // }
-
                         }
+                        // When largestServerType has already been found
                     } else {
                         for (int i = 0; i < serverNum; i++) {
                             String serverInfo = input.readLine();
@@ -114,19 +106,23 @@ public class myClient {
                             serverTypeList.add(i, serverType);
                         }
                     }
-
+                    // increments loopStart so that largestServerType does not get re-updated
                     loopStart++;
-                    count = Collections.frequency(serverTypeList, largestServerType);
+
+                    // counts number of largest servers
+                    int countLargestServer = Collections.frequency(serverTypeList, largestServerType);
 
                     output.write("OK\n".getBytes());
                     output.flush();
 
-                    int schdIndex = jobID % count;
+                    // determines which index of largest server will handle the job
+                    int schdIndex = jobID % countLargestServer;
 
                     // receives a "." message to schedule the job
                     input.readLine();
+
                     String schd = "SCHD " + jobID + " " + largestServerType + " "
-                            + schdIndex + "\n";
+                            + schdIndex + "\n"; // SCHD message
 
                     output.write(schd.getBytes());
                     output.flush();
