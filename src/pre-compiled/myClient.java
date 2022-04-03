@@ -17,7 +17,7 @@ public class myClient {
             // Receives an OK message
             input.readLine();
 
-            output.write("AUTH nihal".getBytes());
+            output.write("AUTH nihal\n".getBytes());
 
             output.flush();
 
