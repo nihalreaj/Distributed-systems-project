@@ -16,8 +16,8 @@ public class myClient {
 
             // Receives an OK message
             input.readLine();
-            String username = System.getProperty("user.name");
-            output.write(username.getBytes());
+
+            output.write("AUTH nihal".getBytes());
 
             output.flush();
 
