@@ -105,7 +105,15 @@ public class myClient {
                             // }
 
                         }
+                    } else {
+                        for (int i = 0; i < serverNum; i++) {
+                            String serverInfo = input.readLine();
+                            String[] serverSplit = serverInfo.split("\\s");
+                            String serverType = serverSplit[0];
+                            serverTypeList.add(i, serverType);
+                        }
                     }
+
                     loopStart++;
                     count = Collections.frequency(serverTypeList, largestServerType);
 
@@ -128,7 +136,6 @@ public class myClient {
                     output.flush();
                     // receives next job details
                     rcvd = input.readLine();
-                    count = 1;
 
                 }
 
