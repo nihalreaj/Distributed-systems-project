@@ -31,6 +31,7 @@ public class myClient {
 
             String largestServerType = " ";
             int count = 1;
+            int loopStart = 0;
 
             // Loop to schedule jobs
             while (!rcvd.contains("NONE")) {
@@ -66,41 +67,42 @@ public class myClient {
                     ArrayList<Integer> serverIDList = new ArrayList<Integer>();
                     ArrayList<String> serverTypeList = new ArrayList<String>();
                     ArrayList<Integer> cpuCoresList = new ArrayList<Integer>();
-                    ArrayList<String> largestServers = new ArrayList<String>();
 
                     // intialized a largest index int for server with most CPUCores
                     int largestIndexCore = 0;
 
-                    for (int i = 0; i < serverNum; i++) {
-                        // Receives server details for ones that can handle the job
-                        String serverInfo = input.readLine();
-                        String[] serverSplit = serverInfo.split("\\s");
-                        String serverType = serverSplit[0];
+                    // for-loop to iterate through all available servers
+                    if (loopStart == 0) {
+                        for (int i = 0; i < serverNum; i++) {
+                            // Receives server details for ones that can handle the job
+                            String serverInfo = input.readLine();
+                            String[] serverSplit = serverInfo.split("\\s");
+                            String serverType = serverSplit[0];
 
-                        int serverID = Integer.parseInt(serverSplit[1]);
+                            int serverID = Integer.parseInt(serverSplit[1]);
 
-                        int cpuCores = Integer.parseInt(serverSplit[4]);
-                        cpuCoresList.add(i, cpuCores);
-                        serverTypeList.add(i, serverType);
-                        serverIDList.add(i, serverID);
+                            int cpuCores = Integer.parseInt(serverSplit[4]);
+                            cpuCoresList.add(i, cpuCores);
+                            serverTypeList.add(i, serverType);
+                            serverIDList.add(i, serverID);
 
-                        if (largestServerType.contains(serverType)) {
-                            count++;
+                            if (largestServerType.contains(serverType)) {
+                                count++;
+                            }
+
+                            if (cpuCoresList.get(i) > cpuCoresList.get(largestIndexCore)) {
+                                largestIndexCore = i;
+                                largestServerType = serverTypeList.get(i);
+                                count = 1;
+                            }
+
+                            if (count == 1) {
+                                largestServerType = serverTypeList.get(i);
+                            }
+
                         }
-
-                        if (cpuCoresList.get(i) > cpuCoresList.get(largestIndexCore)) {
-                            largestIndexCore = i;
-                            largestServerType = serverTypeList.get(i);
-                            count = 1;
-                        }
-
-                        if (count == 1) {
-                            largestServerType = serverTypeList.get(i);
-                        }
-
                     }
-
-                    largestServerType = serverTypeList.get(serverTypeList.size() - 1);
+                    loopStart++;
                     count = Collections.frequency(serverTypeList, largestServerType);
 
                     output.write("OK\n".getBytes());
