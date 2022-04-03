@@ -79,26 +79,30 @@ public class myClient {
                             String[] serverSplit = serverInfo.split("\\s");
                             String serverType = serverSplit[0];
 
-                            int serverID = Integer.parseInt(serverSplit[1]);
+                            // int serverID = Integer.parseInt(serverSplit[1]);
 
                             int cpuCores = Integer.parseInt(serverSplit[4]);
                             cpuCoresList.add(i, cpuCores);
                             serverTypeList.add(i, serverType);
-                            serverIDList.add(i, serverID);
+                            // serverIDList.add(i, serverID);
 
-                            if (largestServerType.contains(serverType)) {
-                                count++;
-                            }
+                            // if (largestServerType.contains(serverType)) {
+                            // count++;
+                            // }
 
                             if (cpuCoresList.get(i) > cpuCoresList.get(largestIndexCore)) {
                                 largestIndexCore = i;
                                 largestServerType = serverTypeList.get(i);
-                                count = 1;
+                                // count = 1;
                             }
 
-                            if (count == 1) {
-                                largestServerType = serverTypeList.get(i);
+                            if (serverTypeList.size() == 1) {
+                                largestServerType = serverTypeList.get(0);
                             }
+
+                            // if (count == 1) {
+                            // largestServerType = serverTypeList.get(i);
+                            // }
 
                         }
                     }
