@@ -1,3 +1,4 @@
 # COMP3100proj
-readme for week2
-
+Assignment Stage 1
+Name - Alif Bin Reaj Nihal
+StudentID - 45632219
