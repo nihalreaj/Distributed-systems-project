@@ -104,7 +104,7 @@ public class firstCapable {
                     output.flush();
 
                     // determines which index of largest server will handle the job
-                    int schdIndex = jobID % countLargestServer;
+                    int schdIndex = 0;
 
                     // receives a "." message to schedule the job
                     input.readLine();
