@@ -82,7 +82,7 @@ public class firstCapable {
                             String serverType = serverSplit[0]; // stores current server type in a String
                             serverTypeList.add(i, serverType);
 
-                            firstServerType = serverType;
+                            firstServerType = serverTypeList.get(0);
 
                         }
                         // When largestServerType has already been found
