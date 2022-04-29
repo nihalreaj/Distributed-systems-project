@@ -74,31 +74,22 @@ public class firstCapable {
                     // intialized a largest index int for server with most CPUCores
 
                     // for-loop to iterate through all available servers
-                    if (loopStart == 0) { // if-statement so largestServerType updates only once
-                        for (int i = 0; i < serverNum; i++) {
-                            // Receives server details for ones that can handle the job
-                            String serverInfo = input.readLine();
-                            String[] serverSplit = serverInfo.split("\\s"); // Splits server info and stored in array
-                            String serverType = serverSplit[0]; // stores current server type in a String
-                            serverTypeList.add(i, serverType);
+                    // if-statement so largestServerType updates only once
+                    for (int i = 0; i < serverNum; i++) {
+                        // Receives server details for ones that can handle the job
+                        String serverInfo = input.readLine();
+                        String[] serverSplit = serverInfo.split("\\s"); // Splits server info and stored in array
+                        String serverType = serverSplit[0]; // stores current server type in a String
+                        serverTypeList.add(i, serverType);
 
-                            firstServerType = serverTypeList.get(0);
+                        firstServerType = serverTypeList.get(0);
 
-                        }
-                        // When largestServerType has already been found
-                    } else {
-                        for (int i = 0; i < serverNum; i++) {
-                            String serverInfo = input.readLine();
-                            String[] serverSplit = serverInfo.split("\\s");
-                            String serverType = serverSplit[0];
-                            serverTypeList.add(i, serverType);
-                        }
                     }
-                    // increments loopStart so that largestServerType does not get re-updated
-                    loopStart++;
+                    // When largestServerType has already been found
+
+                    // increments loopStart so that largestServerType does not get re-update
 
                     // counts number of largest servers
-                    int countLargestServer = Collections.frequency(serverTypeList, firstServerType);
 
                     output.write("OK\n".getBytes());
                     output.flush();
