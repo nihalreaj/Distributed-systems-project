@@ -91,25 +91,23 @@ public class stage2 {
                         serverIdList.add(i, serverID);
 
                         String serverStatus = serverSplit[2]; // stores current server status in a string
-                        if (!(serverStatus.contains("active"))) {
-                            if (!(serverStatus.contains("booting"))) {
-                                int counter = 0;
-                                int fitnessValue = serverCore - jobCore;
-                                if (schdServer.contains("none")) {
+                        if ((!serverStatus.contains("active")) && (!serverStatus.contains("booting"))) {
+                            int counter = 0;
+                            int fitnessValue = serverCore - jobCore;
+                            if (schdServer.contains("none")) {
+                                schdServer = serverTypeList.get(i);
+                                schdIndex = serverIdList.get(i);
+                                fitnessScoreList.add(counter, fitnessValue);
+                            } else {
+                                fitnessScoreList.add(counter, fitnessValue);
+                                if (fitnessScoreList.get(counter) < fitnessScoreList.get(bfIndex)) {
                                     schdServer = serverTypeList.get(i);
                                     schdIndex = serverIdList.get(i);
-                                    fitnessScoreList.add(counter, fitnessValue);
-                                } else {
-                                    fitnessScoreList.add(counter, fitnessValue);
-                                    if (fitnessScoreList.get(counter) < fitnessScoreList.get(bfIndex)) {
-                                        schdServer = serverTypeList.get(i);
-                                        schdIndex = serverIdList.get(i);
-                                        bfIndex = counter;
-                                    }
+                                    bfIndex = counter;
                                 }
-                                counter++;
-
                             }
+                            counter++;
+
                         }
                         // String serverType = serverSplit[0]; // stores current server type in a String
                         // serverTypeList.add(i, serverType);
