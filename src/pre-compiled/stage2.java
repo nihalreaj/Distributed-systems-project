@@ -91,7 +91,7 @@ public class stage2 {
                         serverIdList.add(i, serverID);
 
                         String serverStatus = serverSplit[2]; // stores current server status in a string
-                        if ((!serverStatus.contains("active")) && (!serverStatus.contains("booting"))) {
+                        if (serverStatus.contains("inactive")) {
                             int counter = 0;
                             int fitnessValue = serverCore - jobCore;
                             if (schdServer.contains("none")) {
