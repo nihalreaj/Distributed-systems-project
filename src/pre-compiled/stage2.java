@@ -31,9 +31,6 @@ public class stage2 {
             String rcvd = input.readLine();
             int loopstart = 0;
 
-            String schdServer = "none"; // String created to store largest server type
-            int schdIndex = 0;
-
             // While-Loop to schedule jobs
             while (!rcvd.contains("NONE")) {
                 if (rcvd.contains("JCPL")) {
@@ -46,6 +43,9 @@ public class stage2 {
                 if (rcvd.contains("JOBN")) {
                     // Splitting the Job details to find out jobID, and number of cores, memory and
                     // disk space required
+                    String schdServer = "none"; // String created to store largest server type
+                    int schdIndex = 0;
+
                     String[] jobSplit = rcvd.split("\\s");
 
                     int jobID = Integer.parseInt(jobSplit[2]); // Storing jobID as an int
