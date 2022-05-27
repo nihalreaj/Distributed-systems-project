@@ -79,6 +79,7 @@ public class stage2 {
 
                     // for-loop to iterate through all available servers
                     // if-statement so largestServerType updates only once
+                    int counter = 0;
                     for (int i = 0; i < serverNum; i++) {
                         // Receives server details for ones that can handle the job
                         String serverInfo = input.readLine();
@@ -92,7 +93,7 @@ public class stage2 {
 
                         String serverStatus = serverSplit[2]; // stores current server status in a string
                         if (serverStatus.contains("inactive")) {
-                            int counter = 0;
+
                             int fitnessValue = serverCore - jobCore;
                             if (schdServer.contains("none")) {
                                 schdServer = serverTypeList.get(i);
