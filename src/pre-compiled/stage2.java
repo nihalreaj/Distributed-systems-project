@@ -92,7 +92,7 @@ public class stage2 {
                         serverIdList.add(i, serverID);
 
                         String serverStatus = serverSplit[2]; // stores current server status in a string
-                        if (serverStatus.contains("inactive")) {
+                        if (serverStatus.contains("inactive") || serverStatus.contains("idle")) {
 
                             int fitnessValue = serverCore - jobCore;
                             if (schdServer.contains("none")) {
@@ -101,6 +101,22 @@ public class stage2 {
                                 fitnessScoreList.add(counter, fitnessValue);
                             } else {
                                 fitnessScoreList.add(counter, fitnessValue);
+                                if (fitnessScoreList.get(counter) < fitnessScoreList.get(bfIndex)) {
+                                    schdServer = serverTypeList.get(i);
+                                    schdIndex = serverIdList.get(i);
+                                    bfIndex = counter;
+                                }
+                            }
+                            counter++;
+
+                        } else {
+                            int fitnessValue = serverCore - jobCore;
+                            fitnessScoreList.add(counter, fitnessValue);
+                            if (schdServer.contains("none")) {
+                                schdServer = serverTypeList.get(i);
+                                schdIndex = serverIdList.get(i);
+
+                            } else {
                                 if (fitnessScoreList.get(counter) < fitnessScoreList.get(bfIndex)) {
                                     schdServer = serverTypeList.get(i);
                                     schdIndex = serverIdList.get(i);
