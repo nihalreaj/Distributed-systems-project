@@ -75,11 +75,9 @@ public class stage2 {
 
                     int bfIndex = 0;
 
-                    // intialized a largest index int for server with most CPUCores
-
                     // for-loop to iterate through all available servers
-                    // if-statement so largestServerType updates only once
-                    int counter = 0;
+                    int fitnessI = 0;
+                    int inactiveCount = 0;
                     for (int i = 0; i < serverNum; i++) {
                         // Receives server details for ones that can handle the job
                         String serverInfo = input.readLine();
@@ -88,49 +86,52 @@ public class stage2 {
                         String serverType = serverSplit[0]; // stores current server type in a String
                         int serverID = Integer.parseInt(serverSplit[1]);
                         int serverCore = Integer.parseInt(serverSplit[4]);
-                        serverTypeList.add(i, serverType);
-                        serverIdList.add(i, serverID);
 
                         String serverStatus = serverSplit[2]; // stores current server status in a string
                         if (serverStatus.contains("inactive") || serverStatus.contains("idle")) {
-
+                            inactiveCount++;
                             int fitnessValue = serverCore - jobCore;
+                            fitnessScoreList.add(fitnessI, fitnessValue);
                             if (schdServer.contains("none")) {
-                                schdServer = serverTypeList.get(i);
-                                schdIndex = serverIdList.get(i);
-                                fitnessScoreList.add(counter, fitnessValue);
+                                schdServer = serverType;
+                                schdIndex = serverID;
+                                fitnessScoreList.add(fitnessI, fitnessValue);
                             } else {
-                                fitnessScoreList.add(counter, fitnessValue);
-                                if (fitnessScoreList.get(counter) < fitnessScoreList.get(bfIndex)) {
-                                    schdServer = serverTypeList.get(i);
-                                    schdIndex = serverIdList.get(i);
-                                    bfIndex = counter;
+                                if (fitnessScoreList.get(fitnessI) < fitnessScoreList.get(bfIndex)) {
+                                    schdServer = serverType;
+                                    schdIndex = serverID;
+                                    bfIndex = fitnessI;
                                 }
                             }
-                            counter++;
-
-                        } else {
-                            int fitnessValue = serverCore - jobCore;
-                            fitnessScoreList.add(counter, fitnessValue);
-                            if (schdServer.contains("none")) {
-                                schdServer = serverTypeList.get(i);
-                                schdIndex = serverIdList.get(i);
-
-                            } else {
-                                if (fitnessScoreList.get(counter) < fitnessScoreList.get(bfIndex)) {
-                                    schdServer = serverTypeList.get(i);
-                                    schdIndex = serverIdList.get(i);
-                                    bfIndex = counter;
-                                }
-                            }
-                            counter++;
-
+                            fitnessI++;
                         }
-                        // String serverType = serverSplit[0]; // stores current server type in a String
-                        // serverTypeList.add(i, serverType);
+                    }
+                    if (inactiveCount == 0) {
+                        for (int i = 0; i < serverNum; i++) {
+                            // Receives server details for ones that can handle the job
+                            String serverInfo = input.readLine();
+                            String[] serverSplit = serverInfo.split("\\s"); // Splits server info and stored in array
 
-                        // schdServer = serverTypeList.get(0);
+                            String serverType = serverSplit[0]; // stores current server type in a String
+                            int serverID = Integer.parseInt(serverSplit[1]);
+                            int serverCore = Integer.parseInt(serverSplit[4]);
 
+                            int fitnessValue = serverCore - jobCore;
+                            fitnessScoreList.add(fitnessI, fitnessValue);
+
+                            if (schdServer.contains("none")) {
+                                schdServer = serverType;
+                                schdIndex = serverID;
+                                fitnessScoreList.add(fitnessI, fitnessValue);
+                            } else {
+                                if (fitnessScoreList.get(fitnessI) < fitnessScoreList.get(bfIndex)) {
+                                    schdServer = serverTypeList.get(i);
+                                    schdIndex = serverIdList.get(i);
+                                    bfIndex = fitnessI;
+                                }
+                            }
+                            fitnessI++;
+                        }
                     }
                     // When largestServerType has already been found
 
