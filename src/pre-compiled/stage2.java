@@ -125,8 +125,8 @@ public class stage2 {
                                 fitnessScoreList.add(fitnessI, fitnessValue);
                             } else {
                                 if (fitnessScoreList.get(fitnessI) < fitnessScoreList.get(bfIndex)) {
-                                    schdServer = serverTypeList.get(i);
-                                    schdIndex = serverIdList.get(i);
+                                    schdServer = serverType;
+                                    schdIndex = serverID;
                                     bfIndex = fitnessI;
                                 }
                             }
