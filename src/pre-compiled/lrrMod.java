@@ -2,7 +2,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class stage2 {
+public class lrrMod {
     public static void main(String[] args) throws IOException {
         try {
             // Initialising Socket, Client output to server and input from server
@@ -29,7 +29,10 @@ public class stage2 {
 
             // Recevies Job details from server and stored in a String variable
             String rcvd = input.readLine();
-            int loopstart = 0;
+
+            String largestServerType = " "; // String created to store largest server type
+
+            int loopStart = 0; // created an int variable so that largestServerType gets updated only once
 
             // While-Loop to schedule jobs
             while (!rcvd.contains("NONE")) {
@@ -43,15 +46,11 @@ public class stage2 {
                 if (rcvd.contains("JOBN")) {
                     // Splitting the Job details to find out jobID, and number of cores, memory and
                     // disk space required
-                    String schdServer = "none"; // String created to store largest server type
-                    int schdIndex = 0;
-
                     String[] jobSplit = rcvd.split("\\s");
 
                     int jobID = Integer.parseInt(jobSplit[2]); // Storing jobID as an int
-                    int jobCore = Integer.parseInt(jobSplit[4]);
 
-                    String getsMessage = "GETS Capable " + jobCore + " " + jobSplit[5] + " " +
+                    String getsMessage = "GETS Capable " + jobSplit[4] + " " + jobSplit[5] + " " +
                             jobSplit[6] + "\n"; // String variable created to store message for GETS
                     output.write(getsMessage.getBytes());
                     output.flush();
@@ -69,72 +68,44 @@ public class stage2 {
 
                     // Arraylists created to store the server type and coreCount required to
                     // schedule a new job
-                    ArrayList<Integer> fitnessScoreList = new ArrayList<Integer>();
-                    int bfIndex = 0;
+                    ArrayList<String> serverTypeList = new ArrayList<String>();
+                    ArrayList<Integer> cpuCoresList = new ArrayList<Integer>();
+                    ArrayList<Integer> serverIDList = new ArrayList<Integer>();
+
+                    // intialized a largest index int for server with most CPUCores
+
+                    int largestIndexCore = 0;
 
                     // for-loop to iterate through all available servers
-                    int fitnessI = 0;
-                    int inactiveCount = 0;
+                    // if-statement so largestServerType updates only once
                     for (int i = 0; i < serverNum; i++) {
                         // Receives server details for ones that can handle the job
-
                         String serverInfo = input.readLine();
                         String[] serverSplit = serverInfo.split("\\s"); // Splits server info and stored in array
-
                         String serverType = serverSplit[0]; // stores current server type in a String
                         int serverID = Integer.parseInt(serverSplit[1]);
-                        int serverCore = Integer.parseInt(serverSplit[4]);
 
-                        String serverStatus = serverSplit[2]; // stores current server status in a string
+                        int cpuCores = Integer.parseInt(serverSplit[4]); // Stores server coreCount in an int
+                        cpuCoresList.add(i, cpuCores); // adds current coreCount to ArrayList
+                        serverTypeList.add(i, serverType); // adds current server type to Arraylist
+                        serverIDList.add(i, serverID);
 
-                        int fitnessValue = serverCore - jobCore;
-                        if (fitnessValue < 0) {
-                            fitnessValue = 350;
+                        // Checks to see if current server has more cores than one of largestIndex
+                        if (cpuCoresList.get(i) > cpuCoresList.get(largestIndexCore)) {
+                            largestIndexCore = i;
+                            largestServerType = serverTypeList.get(i);
                         }
 
-                        fitnessScoreList.add(i, fitnessValue);
-
-                        if (!serverStatus.equals("active")) {
-
-                            inactiveCount++;
-
-                            if (inactiveCount == 1) {
-                                bfIndex = i;
-                                schdServer = "none";
-                            }
-
-                            if (schdServer.contains("none")) {
-                                schdServer = serverType;
-                                schdIndex = serverID;
-
-                            }
-                            if (fitnessScoreList.get(i) < fitnessScoreList.get(bfIndex)) {
-                                schdServer = serverType;
-                                schdIndex = serverID;
-                                bfIndex = i;
-
-                            }
-                        }
-
-                        if (inactiveCount < 1) {
-                            if (schdServer.contains("none")) {
-                                schdServer = serverType;
-                                schdIndex = serverID;
-
-                            } else {
-                                if (fitnessScoreList.get(i) < fitnessScoreList.get(bfIndex)) {
-                                    schdServer = serverType;
-                                    schdIndex = serverID;
-                                    bfIndex = i;
-                                }
-                            }
+                        // updates LargestServerType when there is only one server listed
+                        if (serverTypeList.size() == 1) {
+                            largestServerType = serverTypeList.get(0);
                         }
 
                     }
-
                     // When largestServerType has already been found
 
-                    // increments loopStart so that largestServerType does not get re-update
+                    // increments loopStart so that largestServerType does not get re-updated
+                    loopStart++;
 
                     // counts number of largest servers
 
@@ -146,8 +117,8 @@ public class stage2 {
                     // receives a "." message to schedule the job
                     input.readLine();
 
-                    String schd = "SCHD " + jobID + " " + schdServer + " "
-                            + schdIndex + "\n"; // SCHD message
+                    String schd = "SCHD " + jobID + " " + largestServerType + " "
+                            + largestIndexCore + "\n"; // SCHD message
 
                     output.write(schd.getBytes());
                     output.flush();
