@@ -75,6 +75,7 @@ public class stage2 {
                     // for-loop to iterate through all available servers
                     int fitnessI = 0;
                     int inactiveCount = 0;
+                    int bootCount = 0;
                     for (int i = 0; i < serverNum; i++) {
                         // Receives server details for ones that can handle the job
 
@@ -94,7 +95,30 @@ public class stage2 {
 
                         fitnessScoreList.add(i, fitnessValue);
 
-                        if (!serverStatus.equals("active")) {
+                        if (serverStatus.equals("idle")) {
+
+                            fitnessI++;
+                            
+
+                            if (fitnessI == 0) {
+                                bfIndex = i;
+                                schdServer = "none";
+                            }
+
+                            if (schdServer.contains("none")) {
+                                schdServer = serverType;
+                                schdIndex = serverID;
+
+                            }
+                            if (fitnessScoreList.get(i) < fitnessScoreList.get(bfIndex)) {
+                                schdServer = serverType;
+                                schdIndex = serverID;
+                                bfIndex = i;
+
+                            }
+                        }
+
+                        else if ((serverStatus.equals("booting")) && (fitnessI < 1)) {
 
                             inactiveCount++;
 
@@ -115,8 +139,30 @@ public class stage2 {
 
                             }
                         }
+                        
+                        else if (serverStatus.equals("inactive") && (inactiveCount < 1)){
+                        	
+                        	bootCount++;
+                        	
+                        	if (bootCount == 1) {
+                                bfIndex = i;
+                                schdServer = "none";
+                            }	
+                        	
+                        	if (schdServer.contains("none")) {
+                                schdServer = serverType;
+                                schdIndex = serverID;
 
-                        if (inactiveCount < 1) {
+                            }
+                            if (fitnessScoreList.get(i) < fitnessScoreList.get(bfIndex)) {
+                                schdServer = serverType;
+                                schdIndex = serverID;
+                                bfIndex = i;
+
+                            }
+                        }
+
+                        if (bootCount < 1) {
                             if (schdServer.contains("none")) {
                                 schdServer = serverType;
                                 schdIndex = serverID;
