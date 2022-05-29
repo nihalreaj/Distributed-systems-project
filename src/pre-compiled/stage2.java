@@ -29,7 +29,6 @@ public class stage2 {
 
             // Recevies Job details from server and stored in a String variable
             String rcvd = input.readLine();
-            int loopstart = 0;
 
             // While-Loop to schedule jobs
             while (!rcvd.contains("NONE")) {
