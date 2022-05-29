@@ -41,11 +41,12 @@ public class stage2 {
                     rcvd = input.readLine();
                 }
                 if (rcvd.contains("JOBN")) {
+
+                    String schdServer = "none"; // String created to store server type that will be scheduled
+                    int schdIndex = 0; // int created to store index of scheduled server
+
                     // Splitting the Job details to find out jobID, and number of cores, memory and
                     // disk space required
-                    String schdServer = "none"; // String created to store largest server type
-                    int schdIndex = 0;
-
                     String[] jobSplit = rcvd.split("\\s");
 
                     int jobID = Integer.parseInt(jobSplit[2]); // Storing jobID as an int
@@ -67,15 +68,16 @@ public class stage2 {
                     // Takes the 2nd arguement,number of servers, and stored in an int variable
                     int serverNum = Integer.parseInt(dataSplit[1]);
 
-                    // Arraylists created to store the server type and coreCount required to
-                    // schedule a new job
+                    // Arraylists created to store the fitness values required to compare for
+                    // finding lowest core server
                     ArrayList<Integer> fitnessScoreList = new ArrayList<Integer>();
-                    int bfIndex = 0;
+                    int smallestIndex = 0; //
 
                     // for-loop to iterate through all available servers
-                    int fitnessI = 0;
-                    int inactiveCount = 0;
-                    int bootCount = 0;
+
+                    int idleCount = 0; // int created for condition to check for idle servers
+                    int inactiveCount = 0; // int created for condition to check for inactive servers
+                    int bootCount = 0; // int created for condition to check for booting servers
                     for (int i = 0; i < serverNum; i++) {
                         // Receives server details for ones that can handle the job
 
@@ -88,102 +90,107 @@ public class stage2 {
 
                         String serverStatus = serverSplit[2]; // stores current server status in a string
 
-                        int fitnessValue = serverCore - jobCore;
+                        int fitnessValue = serverCore - jobCore; // int created to store difference of Server core by
+                                                                 // Job core
+
+                        // condition to check if fitnessValue is negative
                         if (fitnessValue < 0) {
-                            fitnessValue = 350;
+                            fitnessValue = 350; // fitness value increased so it doesn't get scheduled when it is
+                                                // negative
                         }
 
-                        fitnessScoreList.add(i, fitnessValue);
+                        fitnessScoreList.add(i, fitnessValue); // added current server's fitnessValue to arrayList
 
+                        // if-condition to make sure jobs are scheduled to idle servers first
                         if (serverStatus.equals("idle")) {
 
-                            fitnessI++;
-                            
+                            idleCount++; // increment idleCount
 
-                            if (fitnessI == 0) {
-                                bfIndex = i;
-                                schdServer = "none";
-                            }
-
-                            if (schdServer.contains("none")) {
+                            if (schdServer.contains("none")) { // if no servers are selected to be scheduled
                                 schdServer = serverType;
                                 schdIndex = serverID;
 
                             }
-                            if (fitnessScoreList.get(i) < fitnessScoreList.get(bfIndex)) {
+                            // comparing fitnessValues to select new server for scheduling
+                            if (fitnessScoreList.get(i) < fitnessScoreList.get(smallestIndex)) {
                                 schdServer = serverType;
                                 schdIndex = serverID;
-                                bfIndex = i;
+                                smallestIndex = i;
 
                             }
                         }
 
-                        else if ((serverStatus.equals("booting")) && (fitnessI < 1)) {
+                        // if-condition to make sure jobs are scheduled to booting servers if no idle
+                        // servers are found
+                        else if ((serverStatus.equals("booting")) && (idleCount < 1)) {
 
-                            inactiveCount++;
+                            bootCount++;
 
-                            if (inactiveCount == 1) {
-                                bfIndex = i;
+                            if (bootCount == 1) { // if inactive servers are found before booting servers
+                                smallestIndex = i;
                                 schdServer = "none";
                             }
 
-                            if (schdServer.contains("none")) {
+                            if (schdServer.contains("none")) { // if no servers are selected to be scheduled
                                 schdServer = serverType;
                                 schdIndex = serverID;
 
                             }
-                            if (fitnessScoreList.get(i) < fitnessScoreList.get(bfIndex)) {
-                                schdServer = serverType;
-                                schdIndex = serverID;
-                                bfIndex = i;
 
-                            }
-                        }
-                        
-                        else if (serverStatus.equals("inactive") && (inactiveCount < 1)){
-                        	
-                        	bootCount++;
-                        	
-                        	if (bootCount == 1) {
-                                bfIndex = i;
-                                schdServer = "none";
-                            }	
-                        	
-                        	if (schdServer.contains("none")) {
+                            // comparing fitnessValues to select new server for scheduling
+                            if (fitnessScoreList.get(i) < fitnessScoreList.get(smallestIndex)) {
                                 schdServer = serverType;
                                 schdIndex = serverID;
-
-                            }
-                            if (fitnessScoreList.get(i) < fitnessScoreList.get(bfIndex)) {
-                                schdServer = serverType;
-                                schdIndex = serverID;
-                                bfIndex = i;
+                                smallestIndex = i;
 
                             }
                         }
 
-                        if (bootCount < 1) {
-                            if (schdServer.contains("none")) {
+                        // if-condition to make sure jobs are scheduled to inactive servers if no idle
+                        // or booting servers are found
+                        else if (serverStatus.equals("inactive") && (bootCount < 1)) {
+
+                            inactiveCount++; // increment
+
+                            if (inactiveCount == 1) { // if active servers are found before inactive servers
+                                smallestIndex = i;
+                                schdServer = "none";
+                            }
+
+                            if (schdServer.contains("none")) { // if no servers are selected to be scheduled
+                                schdServer = serverType;
+                                schdIndex = serverID;
+
+                            }
+                            // comparing fitnessValues to select new server for scheduling
+                            if (fitnessScoreList.get(i) < fitnessScoreList.get(smallestIndex)) {
+                                schdServer = serverType;
+                                schdIndex = serverID;
+                                smallestIndex = i;
+
+                            }
+                        }
+
+                        // if-condition to make sure jobs are scheduled to active servers if other
+                        // servers are found
+                        if (inactiveCount < 1) {
+                            if (schdServer.contains("none")) { // if no servers are selected to be scheduled
                                 schdServer = serverType;
                                 schdIndex = serverID;
 
                             } else {
-                                if (fitnessScoreList.get(i) < fitnessScoreList.get(bfIndex)) {
+                                // comparing fitnessValues to select new server for scheduling
+                                if (fitnessScoreList.get(i) < fitnessScoreList.get(smallestIndex)) {
                                     schdServer = serverType;
                                     schdIndex = serverID;
-                                    bfIndex = i;
+                                    smallestIndex = i;
                                 }
                             }
                         }
 
                     }
 
-                    // When largestServerType has already been found
-
-                    // increments loopStart so that largestServerType does not get re-update
-
-                    // counts number of largest servers
-
+                    // write an OK message to server
                     output.write("OK\n".getBytes());
                     output.flush();
 
